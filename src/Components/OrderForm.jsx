@@ -1,8 +1,33 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { FormGroup, Input, Button, Alert } from 'reactstrap'
+import styled from 'styled-components'
 import * as yup from 'yup'
-import { Input, Button, FormGroup, Label, CustomInput, Alert } from 'reactstrap'
 
+const Form = styled.form`
+  max-width: 800px;
+  margin: 60px auto;
+  border: 2px solid black;
+  padding: 20px;
+`
+const Styledh3 = styled.h3`
+  text-align: center;
+`
+const StyledToppings = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  height: 400px;
+  align-content: space-between;
+  padding: 20px;
+`
+const StyledLabel = styled.label`
+  padding: 10px 0;
+`
+const StyledOrderFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
 export default function OrderForm({ order, setOrder }) {
 
   const initialState = {
@@ -133,7 +158,8 @@ export default function OrderForm({ order, setOrder }) {
   }
 
   return (
-    <form style={{ padding: '40px' }} onSubmit={e => handleSubmit(e)}>
+    <Form style={{ padding: '40px' }} onSubmit={e => handleSubmit(e)}>
+      <Styledh3>Build Your Own Pizza</Styledh3>
       <FormGroup>
         <legend>Your Name</legend>
         <Input type="text" placeholder="Your Name" value={formState.customer} onChange={e => handleChange(e)} name="customer" data-cy="customer" />
@@ -155,10 +181,10 @@ export default function OrderForm({ order, setOrder }) {
         <legend>Choice of Sauce</legend>
         {formState.sauces.map(sauce => {
           return (
-            <Label htlmFor={sauce.id} check>
+            <StyledLabel htlmFor={sauce.id} check>
               <Input type="radio" name="sauces" id={sauce.id} onChange={e => handleChange(e)} value={sauce.isChecked} checked={sauce.isChecked} />
               {sauce.name}
-            </Label>
+            </StyledLabel>
           )
         })}
 
@@ -166,20 +192,22 @@ export default function OrderForm({ order, setOrder }) {
 
       <FormGroup check style={{ display: 'flex', flexDirection: 'column' }}>
         <legend>Add Toppings</legend>
-        {formState.toppingsChecked.map(toppings => {
-          return (
-            <Label htmlFor={toppings.id}>
-              <Input
-                type="checkbox"
-                checked={toppings.isChecked} name="toppingsChecked"
-                id={toppings.id}
-                data-cy={toppings.cypressTest}
-                onChange={e => handleChange(e)}
-              />
-              {toppings.name}
-            </Label>
-          )
-        })}
+        <StyledToppings>
+          {formState.toppingsChecked.map(toppings => {
+            return (
+              <StyledLabel htmlFor={toppings.id}>
+                <Input
+                  type="checkbox"
+                  checked={toppings.isChecked} name="toppingsChecked"
+                  id={toppings.id}
+                  data-cy={toppings.cypressTest}
+                  onChange={e => handleChange(e)}
+                />
+                {toppings.name}
+              </StyledLabel>
+            )
+          })}
+        </StyledToppings>
       </FormGroup>
       {/* 
       <FormGroup>
@@ -193,6 +221,6 @@ export default function OrderForm({ order, setOrder }) {
       </FormGroup>
 
       <Button type="submit" data-cy="submit" disabled={isButtonDisabled} color="primary">Place your order!</Button>
-    </form>
+    </Form>
   )
 }
