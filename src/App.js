@@ -1,10 +1,17 @@
 import React from "react";
+import { Route } from "react-router";
+import Nav from "./Components/Nav";
+import OrderForm from "./Components/OrderForm";
 
 const App = () => {
   return (
     <>
-      <h1>Lambda Eats</h1>
-      <p>You can remove this code and create your own header</p>
+      <Nav />
+
+      <Route exact path="/order">
+        <OrderForm />
+      </Route>
+
     </>
   );
 };
