@@ -9,7 +9,8 @@ const StyledCartContainer = styled.div`
 `
 
 const StyledCard = styled.div`
-
+  padding: 20px;
+  font-size: 1.4rem;
 `
 
 export default function Cart({ order }) {
@@ -22,8 +23,7 @@ export default function Cart({ order }) {
           {order.map(o => {
             return (
               <StyledCard>
-                <p>Pizza Size: {o.size}</p>
-                <p>Toppings Selected: {o.toppingsChecked.map(toppings => toppings.name)} </p>
+                Hello {o.customer}! Your {o.size} sized Pizza with {o.toppingsChecked.map(topping => `${topping.name}, `)} is on its way!
               </StyledCard>
             )
           })}

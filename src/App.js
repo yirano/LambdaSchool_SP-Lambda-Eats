@@ -8,6 +8,14 @@ import Home from "./Components/Home";
 const App = () => {
   const [order, setOrder] = useState([]);
   console.log("App -> order", order)
+
+  const tempOrder = [{
+    customer: "Tiffany",
+    toppingsChecked: [{ name: 'Grilled Chicken', id: 'grilled-chicken', isChecked: false },
+    { name: 'Onions', id: 'onions', isChecked: false },
+    { name: 'Green Pepper', id: 'green-pepper', isChecked: false }],
+    size: "Medium",
+  }]
   return (
     <>
       <Nav />
@@ -18,7 +26,7 @@ const App = () => {
         <OrderForm order={order} setOrder={setOrder} />
       </Route>
       <Route exact path="/cart">
-        <Cart order={order} />
+        <Cart order={tempOrder} />
       </Route>
     </>
   );
