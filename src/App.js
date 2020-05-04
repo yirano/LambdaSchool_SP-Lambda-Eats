@@ -5,7 +5,8 @@ import OrderForm from "./Components/OrderForm";
 import Cart from "./Components/Cart";
 
 const App = () => {
-  const [order, setOrder] = useState();
+  const [order, setOrder] = useState([]);
+  console.log("App -> order", order)
   return (
     <>
       <Nav />
