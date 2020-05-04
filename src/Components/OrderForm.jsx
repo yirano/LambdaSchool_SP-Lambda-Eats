@@ -6,11 +6,16 @@ export default function OrderForm({ order, setOrder }) {
   const initialState = {
     name: '',
     size: '',
-    sauce: '',
+    sauce: [
+      { name: 'Original Red', id: 'original-red', isChecked: false },
+      { name: 'Spinach Alfredo', id: 'spinach-alfredo', isChecked: false },
+      { name: 'Garlic Ranch', id: 'garlic-ranch', isChecked: false },
+      { name: 'BBQ Sauce', isChecked: false }
+    ],
     toppingsChecked: [
-      { name: 'Pepperoni', isChecked: false },
-      { name: 'Sausage', isChecked: false },
-      { name: 'Canadian Bacon', isChecked: false },
+      { name: 'Pepperoni', id: 'pepperoni', isChecked: false },
+      { name: 'Sausage', id: 'sausage', isChecked: false },
+      { name: 'Canadian Bacon', id: 'canadian-bacon', isChecked: false },
       { name: 'Spicy Italian Sausage', isChecked: false },
       { name: 'Grilled Chicken', isChecked: false },
       { name: 'Onions', isChecked: false },
@@ -31,19 +36,36 @@ export default function OrderForm({ order, setOrder }) {
   const [formState, setFormState] = useState(initialState);
 
   const handleChange = e => {
-    console.log(e.target.value);
+    let newFormState;
+    if (e.target.type === 'checkbox') {
+      newFormState = {
+        ...formState,
+        toppingsChecked: formState.toppingsChecked.map(topping => {
+          return (
+            topping.name === e.target.id ? {
+              ...topping, isChecked: !topping.isChecked
+            } : { ...topping }
+          )
+        })
+      }
+    } else if (e.target.type === 'radio') {
+      // name = 'sauce'
 
+    } else {
+
+    }
+    setFormState(newFormState)
   }
   return (
-    <form>
+    <form style={{ padding: '40px' }}>
       <FormGroup>
         <legend>Your Name</legend>
-        <Input type="text" placeholder="Your Name" onChange={handleChange} value={formState.name} />
+        <Input type="text" placeholder="Your Name" value={formState.name} onChange={handleChange} name="name" />
       </FormGroup>
 
       <FormGroup>
         <legend>Select Size</legend>
-        <Input type="select" onChange={handleChange} value={formState.size}>
+        <Input type="select" onChange={handleChange} value={formState.size} name="size">
           <option value="">Select Pizza Size</option>
           <option value="small">Small</option>
           <option value="medium">Medium</option>
@@ -51,12 +73,37 @@ export default function OrderForm({ order, setOrder }) {
         </Input>
       </FormGroup>
 
-      <FormGroup>
+      <FormGroup check>
+        <legend>Choice of Sauce</legend>
+        <Label for="original-red" check>
+          <Input type="radio" name="sauce" id="original-red" onChange={handleChange} />
+        Original Red
+        </Label>
+        <Label for="garlic-ranch" check>
+          <Input type="radio" name="sauce" id="garlic-ranch" onChange={handleChange} />
+        Garlic Ranch
+        </Label>
+        <Label for="bbq-sauce" check>
+          <Input type="radio" name="sauce" id="bbq-sauce" onChange={handleChange} />
+        BBQ Sauce
+        </Label>
+        <Label for="spinach-alfredo" check>
+          <Input type="radio" name="sauce" id="spinach-alfredo" onChange={handleChange} />
+        Spinach Alfredo
+        </Label>
+      </FormGroup>
+
+      <FormGroup check style={{ display: 'flex', flexDirection: 'column' }}>
         <legend>Add Toppings</legend>
         {formState.toppingsChecked.map(toppings => {
           return (
             <Label for={toppings.name}>
-              <Input type="checkbox" checked={toppings.isChecked} name="toppingsChecked" id={toppings.name} onChannge={handleChange} />
+              <Input
+                type="checkbox"
+                checked={toppings.isChecked} name="toppingsChecked"
+                id={toppings.name}
+                onChange={handleChange}
+              />
               {toppings.name}
             </Label>
           )
