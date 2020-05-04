@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { Input, Button, FormGroup, Label, CustomInput } from 'reactstrap'
 
 export default function OrderForm({ order, setOrder }) {
 
   const initialState = {
-    name: '',
+    customer: '',
     size: '',
     sauces: [
       { name: 'Original Red', id: 'original-red', isChecked: false },
       { name: 'Spinach Alfredo', id: 'spinach-alfredo', isChecked: false },
       { name: 'Garlic Ranch', id: 'garlic-ranch', isChecked: false },
-      { name: 'BBQ Sauce', isChecked: false }
+      { name: 'BBQ Sauce', id: 'bbq-sauce', isChecked: false }
     ],
     toppingsChecked: [
       { name: 'Pepperoni', id: 'pepperoni', isChecked: false },
@@ -28,6 +29,7 @@ export default function OrderForm({ order, setOrder }) {
       { name: 'Pineapple', id: 'pineapple', isChecked: false },
       { name: 'Extra Cheese', id: 'extra-cheese', isChecked: false },
     ],
+    toppings: [],
     substitute: '',
     instructions: '',
     quantity: ''
@@ -36,36 +38,58 @@ export default function OrderForm({ order, setOrder }) {
   const [formState, setFormState] = useState(initialState);
 
   const handleChange = e => {
+    // e.persist();
     let newFormState;
+    let name = e.target.name;
     if (e.target.type === 'checkbox') {
       newFormState = {
         ...formState,
-        toppingsChecked: formState.toppingsChecked.map(topping => {
+        toppingsChecked: formState.toppingsChecked.map(item => {
           return (
-            topping.name === e.target.id ? {
-              ...topping, isChecked: !topping.isChecked
-            } : { ...topping }
+            item.id === e.target.id ? {
+              ...item, isChecked: !item.isChecked
+            } : { ...item }
           )
         })
       }
     } else if (e.target.type === 'radio') {
-      // name = 'sauce'
-
+      newFormState = {
+        ...formState,
+        sauces: formState.sauces.map(item => {
+          return (
+            item.id === e.target.id ? {
+              ...item, isChecked: !item.isChecked
+            } : { ...item, isChecked: false }
+          )
+        })
+      }
     } else {
-
+      newFormState = {
+        ...formState, [e.target.name]: e.target.value
+      }
     }
     setFormState(newFormState)
   }
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    axios.post('https://reqres.in/', formState)
+      .then(res =>
+        console.log(res.data)
+      )
+      .catch(err => console.log(err))
+  }
+
   return (
     <form style={{ padding: '40px' }}>
       <FormGroup>
         <legend>Your Name</legend>
-        <Input type="text" placeholder="Your Name" value={formState.name} onChange={handleChange} name="name" />
+        <Input type="text" placeholder="Your Name" value={formState.customer} onChange={e => handleChange(e)} name="customer" />
       </FormGroup>
 
       <FormGroup>
         <legend>Select Size</legend>
-        <Input type="select" onChange={handleChange} value={formState.size} name="size">
+        <Input type="select" onChange={e => handleChange(e)} value={formState.size} name="size">
           <option value="">Select Pizza Size</option>
           <option value="small">Small</option>
           <option value="medium">Medium</option>
@@ -75,28 +99,26 @@ export default function OrderForm({ order, setOrder }) {
 
       <FormGroup check style={{ display: 'flex', flexDirection: 'column' }}>
         <legend>Choice of Sauce</legend>
-
         {formState.sauces.map(sauce => {
           return (
-            <Label for={sauce.id} check>
-              <Input type="radio" name="sauce" id={sauce.id} onChange={handleChange} />
+            <Label htlmFor={sauce.id} check>
+              <Input type="radio" name="sauces" id={sauce.id} onChange={e => handleChange(e)} value={sauce.isChecked} checked={sauce.isChecked} />
               {sauce.name}
             </Label>
           )
         })}
-
       </FormGroup>
 
       <FormGroup check style={{ display: 'flex', flexDirection: 'column' }}>
         <legend>Add Toppings</legend>
         {formState.toppingsChecked.map(toppings => {
           return (
-            <Label for={toppings.name}>
+            <Label htmlFor={toppings.id}>
               <Input
                 type="checkbox"
                 checked={toppings.isChecked} name="toppingsChecked"
-                id={toppings.name}
-                onChange={handleChange}
+                id={toppings.id}
+                onChange={e => handleChange(e)}
               />
               {toppings.name}
             </Label>
@@ -106,12 +128,14 @@ export default function OrderForm({ order, setOrder }) {
 
       <FormGroup>
         <legend>Choice of Substitute</legend>
-        <CustomInput type="switch" label="Gluten Free Crust (+ $1.00" value={formState.substitute} onChange={handleChange} />
+        <CustomInput type="switch" label="Gluten Free Crust (+ $1.00" value={formState.substitute} onChange={e => handleChange(e)} />
       </FormGroup>
 
       <FormGroup>
-        <Input type="text" value={formState.instructions} onChange={handleChange} placeholder="Anything else you'd like to add?" />
+        <Input type="text" value={formState.instructions} onChange={e => handleChange(e)} placeholder="Anything else you'd like to add?" />
       </FormGroup>
+
+      <Button type="submit">Place your order!</Button>
     </form>
   )
 }
