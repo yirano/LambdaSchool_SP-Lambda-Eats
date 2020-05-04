@@ -29,7 +29,6 @@ export default function OrderForm({ order, setOrder }) {
       { name: 'Pineapple', id: 'pineapple', isChecked: false },
       { name: 'Extra Cheese', id: 'extra-cheese', isChecked: false },
     ],
-    // toppings: [],
     substitute: '',
     instructions: '',
     quantity: ''
@@ -40,7 +39,6 @@ export default function OrderForm({ order, setOrder }) {
   const handleChange = e => {
     // e.persist();
     let newFormState;
-    let name = e.target.name;
     if (e.target.type === 'checkbox') {
       newFormState = {
         ...formState,
@@ -75,7 +73,6 @@ export default function OrderForm({ order, setOrder }) {
     e.preventDefault();
     axios.post('https://reqres.in/api/users', formState)
       .then(res => {
-
         console.log(res.data)
         const data = {
           ...res.data,
@@ -133,13 +130,14 @@ export default function OrderForm({ order, setOrder }) {
           )
         })}
       </FormGroup>
-
+      {/* 
       <FormGroup>
         <legend>Choice of Substitute</legend>
         <CustomInput type="switch" label="Gluten Free Crust (+ $1.00" value={formState.substitute} name="substitute" onChange={e => handleChange(e)} />
-      </FormGroup>
+      </FormGroup> */}
 
       <FormGroup>
+        <legend>Instructions</legend>
         <Input type="text" name="instructions" value={formState.instructions} onChange={e => handleChange(e)} placeholder="Anything else you'd like to add?" />
       </FormGroup>
 
