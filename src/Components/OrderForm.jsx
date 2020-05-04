@@ -6,7 +6,7 @@ export default function OrderForm({ order, setOrder }) {
   const initialState = {
     name: '',
     size: '',
-    sauce: [
+    sauces: [
       { name: 'Original Red', id: 'original-red', isChecked: false },
       { name: 'Spinach Alfredo', id: 'spinach-alfredo', isChecked: false },
       { name: 'Garlic Ranch', id: 'garlic-ranch', isChecked: false },
@@ -16,17 +16,17 @@ export default function OrderForm({ order, setOrder }) {
       { name: 'Pepperoni', id: 'pepperoni', isChecked: false },
       { name: 'Sausage', id: 'sausage', isChecked: false },
       { name: 'Canadian Bacon', id: 'canadian-bacon', isChecked: false },
-      { name: 'Spicy Italian Sausage', isChecked: false },
-      { name: 'Grilled Chicken', isChecked: false },
-      { name: 'Onions', isChecked: false },
-      { name: 'Green Pepper', isChecked: false },
-      { name: 'Diced Tomatos', isChecked: false },
-      { name: 'Black Olives', isChecked: false },
-      { name: 'Roasted Garlic', isChecked: false },
-      { name: 'Artichoke Hearts', isChecked: false },
-      { name: 'Three Cheese', isChecked: false },
-      { name: 'Pineapple', isChecked: false },
-      { name: 'Extra Cheese', isChecked: false },
+      { name: 'Spicy Italian Sausage', id: 'spicy-italian-sausage', isChecked: false },
+      { name: 'Grilled Chicken', id: 'grilled-chicken', isChecked: false },
+      { name: 'Onions', id: 'onions', isChecked: false },
+      { name: 'Green Pepper', id: 'green-pepper', isChecked: false },
+      { name: 'Diced Tomatos', id: 'diced-tomatos', isChecked: false },
+      { name: 'Black Olives', id: 'black-olives', isChecked: false },
+      { name: 'Roasted Garlic', id: 'roasted-garlic', isChecked: false },
+      { name: 'Artichoke Hearts', id: 'artichoke-hearts', isChecked: false },
+      { name: 'Three Cheese', id: 'three-cheese', isChecked: false },
+      { name: 'Pineapple', id: 'pineapple', isChecked: false },
+      { name: 'Extra Cheese', id: 'extra-cheese', isChecked: false },
     ],
     substitute: '',
     instructions: '',
@@ -73,24 +73,18 @@ export default function OrderForm({ order, setOrder }) {
         </Input>
       </FormGroup>
 
-      <FormGroup check>
+      <FormGroup check style={{ display: 'flex', flexDirection: 'column' }}>
         <legend>Choice of Sauce</legend>
-        <Label for="original-red" check>
-          <Input type="radio" name="sauce" id="original-red" onChange={handleChange} />
-        Original Red
-        </Label>
-        <Label for="garlic-ranch" check>
-          <Input type="radio" name="sauce" id="garlic-ranch" onChange={handleChange} />
-        Garlic Ranch
-        </Label>
-        <Label for="bbq-sauce" check>
-          <Input type="radio" name="sauce" id="bbq-sauce" onChange={handleChange} />
-        BBQ Sauce
-        </Label>
-        <Label for="spinach-alfredo" check>
-          <Input type="radio" name="sauce" id="spinach-alfredo" onChange={handleChange} />
-        Spinach Alfredo
-        </Label>
+
+        {formState.sauces.map(sauce => {
+          return (
+            <Label for={sauce.id} check>
+              <Input type="radio" name="sauce" id={sauce.id} onChange={handleChange} />
+              {sauce.name}
+            </Label>
+          )
+        })}
+
       </FormGroup>
 
       <FormGroup check style={{ display: 'flex', flexDirection: 'column' }}>
