@@ -14,8 +14,8 @@ export default function OrderForm({ order, setOrder }) {
       { name: 'BBQ Sauce', id: 'bbq-sauce', isChecked: false }
     ],
     toppingsChecked: [
-      { name: 'Pepperoni', id: 'pepperoni', isChecked: false },
-      { name: 'Sausage', id: 'sausage', isChecked: false },
+      { name: 'Pepperoni', id: 'pepperoni', isChecked: false, cypressTest: 'pepperoniTest' },
+      { name: 'Sausage', id: 'sausage', isChecked: false, cypressTest: 'sausageTest' },
       { name: 'Canadian Bacon', id: 'canadian-bacon', isChecked: false },
       { name: 'Spicy Italian Sausage', id: 'spicy-italian-sausage', isChecked: false },
       { name: 'Grilled Chicken', id: 'grilled-chicken', isChecked: false },
@@ -37,7 +37,7 @@ export default function OrderForm({ order, setOrder }) {
   const [formState, setFormState] = useState(initialState);
 
   const handleChange = e => {
-    // e.persist();
+    e.persist();
     let newFormState;
     if (e.target.type === 'checkbox') {
       newFormState = {
@@ -89,12 +89,12 @@ export default function OrderForm({ order, setOrder }) {
     <form style={{ padding: '40px' }} onSubmit={e => handleSubmit(e)}>
       <FormGroup>
         <legend>Your Name</legend>
-        <Input type="text" placeholder="Your Name" value={formState.customer} onChange={e => handleChange(e)} name="customer" />
+        <Input type="text" placeholder="Your Name" value={formState.customer} onChange={e => handleChange(e)} name="customer" data-cy="customer" />
       </FormGroup>
 
       <FormGroup>
         <legend>Select Size</legend>
-        <Input type="select" onChange={e => handleChange(e)} value={formState.size} name="size">
+        <Input type="select" onChange={e => handleChange(e)} value={formState.size} name="size" data-cy="size">
           <option value="">Select Pizza Size</option>
           <option value="small">Small</option>
           <option value="medium">Medium</option>
@@ -123,6 +123,7 @@ export default function OrderForm({ order, setOrder }) {
                 type="checkbox"
                 checked={toppings.isChecked} name="toppingsChecked"
                 id={toppings.id}
+                data-cy={toppings.cypressTest}
                 onChange={e => handleChange(e)}
               />
               {toppings.name}
@@ -141,7 +142,7 @@ export default function OrderForm({ order, setOrder }) {
         <Input type="text" name="instructions" value={formState.instructions} onChange={e => handleChange(e)} placeholder="Anything else you'd like to add?" />
       </FormGroup>
 
-      <Button type="submit">Place your order!</Button>
+      <Button type="submit" data-cy="submit">Place your order!</Button>
     </form>
   )
 }
