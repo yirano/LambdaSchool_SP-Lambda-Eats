@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Input, Button, FormGroup, Label, CustomInput } from 'reactstrap'
+import * as yup from 'yup'
+import { Input, Button, FormGroup, Label, CustomInput, Alert } from 'reactstrap'
 
 export default function OrderForm({ order, setOrder }) {
 
@@ -35,6 +36,50 @@ export default function OrderForm({ order, setOrder }) {
   }
 
   const [formState, setFormState] = useState(initialState);
+  const [serverError, setServerError] = useState('')
+  const [formValid, setFormValid] = useState(false)
+  const [isButtonDisabled, setButtonDisabled] = useState(true)
+  const [errors, setErrors] = useState(initialState)
+
+  const formSchema = yup.object().shape({
+    customer: yup.string().min(3, "Your name is required").required("Your name is required"),
+    size: yup.string().required("Please choose a size"),
+    sauces: yup.array()
+      .of(yup.object().shape({
+        name: yup.string(),
+        id: yup.string(),
+        isChecked: yup.boolean()
+      })),
+    toppingsChecked: yup.array()
+      .of(yup.object().shape({
+        name: yup.string(),
+        id: yup.string(),
+        isChecked: yup.boolean()
+      })),
+
+  })
+
+  const validateChange = e => {
+    const name = e.target.name;
+    yup
+      .reach(formSchema, e.target.name, e.target.type)
+      .validate(e.target.value)
+      .then(valid => {
+        setErrors({ ...errors, [e.target.name]: "" })
+      })
+      .catch(err => {
+        console.log("OrderForm -> err", err)
+        setErrors({ ...errors, [name]: err.errors })
+      })
+  }
+
+  useEffect(() => {
+    formSchema.isValid(formState).then(valid => {
+      setButtonDisabled(!valid)
+      setFormValid(valid)
+      console.log("OrderForm -> valid", valid)
+    })
+  }, [formState])
 
   const handleChange = e => {
     e.persist();
@@ -66,6 +111,7 @@ export default function OrderForm({ order, setOrder }) {
         ...formState, [e.target.name]: e.target.value
       }
     }
+    validateChange(e)
     setFormState(newFormState)
   }
 
@@ -80,6 +126,7 @@ export default function OrderForm({ order, setOrder }) {
           toppingsChecked: res.data.toppingsChecked.filter(toppings => toppings.isChecked === true),
         }
         setOrder([...order, data])
+        setFormState(initialState)
       }
       )
       .catch(err => console.log(err))
@@ -90,6 +137,7 @@ export default function OrderForm({ order, setOrder }) {
       <FormGroup>
         <legend>Your Name</legend>
         <Input type="text" placeholder="Your Name" value={formState.customer} onChange={e => handleChange(e)} name="customer" data-cy="customer" />
+        {errors.customer ? (<Alert color="warning">{errors.customer}</Alert>) : null}
       </FormGroup>
 
       <FormGroup>
@@ -100,6 +148,7 @@ export default function OrderForm({ order, setOrder }) {
           <option value="medium">Medium</option>
           <option value="large">Large</option>
         </Input>
+        {errors.size ? (<Alert color="warning">{errors.size}</Alert>) : null}
       </FormGroup>
 
       <FormGroup check style={{ display: 'flex', flexDirection: 'column' }}>
@@ -112,6 +161,7 @@ export default function OrderForm({ order, setOrder }) {
             </Label>
           )
         })}
+
       </FormGroup>
 
       <FormGroup check style={{ display: 'flex', flexDirection: 'column' }}>
@@ -142,7 +192,7 @@ export default function OrderForm({ order, setOrder }) {
         <Input type="text" name="instructions" value={formState.instructions} onChange={e => handleChange(e)} placeholder="Anything else you'd like to add?" />
       </FormGroup>
 
-      <Button type="submit" data-cy="submit">Place your order!</Button>
+      <Button type="submit" data-cy="submit" disabled={isButtonDisabled} color="primary">Place your order!</Button>
     </form>
   )
 }
