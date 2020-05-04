@@ -82,7 +82,7 @@ export default function OrderForm({ order, setOrder }) {
         id: yup.string(),
         isChecked: yup.boolean()
       })),
-
+    instructions: yup.string()
   })
 
   const validateChange = e => {

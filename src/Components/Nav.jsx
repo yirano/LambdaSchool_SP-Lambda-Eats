@@ -16,7 +16,9 @@ const styledLink = {
 export default function Nav() {
   return (
     <StyledNav>
-      <h4 style={{ color: 'red', textTransform: 'uppercase' }}>Lambda Eats</h4>
+      <Link to="/">
+        <h4 style={{ color: 'red', textTransform: 'uppercase' }}>Lambda Eats</h4>
+      </Link>
       <div>
         <Link to="/" style={styledLink} >Home</Link>
         <Link to="/order" style={styledLink} data-cy="orderLink">Order</Link>

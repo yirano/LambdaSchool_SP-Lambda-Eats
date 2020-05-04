@@ -13,6 +13,10 @@ const StyledCard = styled.div`
   font-size: 1.4rem;
 `
 
+const EM = styled.span`
+  font-style: italic;
+`
+
 export default function Cart({ order }) {
   console.log("Cart -> order", order)
   return (
@@ -23,7 +27,11 @@ export default function Cart({ order }) {
           {order.map(o => {
             return (
               <StyledCard>
-                Hello {o.customer}! Your {o.size} sized Pizza with {o.toppingsChecked.map(topping => `${topping.name}, `)} is on its way!
+                Hello <EM>{o.customer}</EM>! Your <EM>{o.size}</EM> Pizza with <EM>{o.toppingsChecked.map(topping => `${topping.name}, `)}</EM> is on its way!
+                <br />
+                <br />
+                {o.instructions ? `Special Instruction:${o.instructions} has also been noted` : ''}
+
               </StyledCard>
             )
           })}
